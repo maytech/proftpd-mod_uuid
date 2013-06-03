@@ -1,0 +1,12 @@
+AC_INIT(./mod_uuid.c)
+
+AC_PROG_CC
+
+AC_CHECK_HEADERS(uuid/uuid.h)
+
+MODULE_LIBS="-luuid"
+AC_SUBST(MODULE_LIBS)
+
+AC_CHECK_LIB(uuid, uuid_generate_random)
+
+AC_OUTPUT(Makefile)

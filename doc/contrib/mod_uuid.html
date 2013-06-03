@@ -1,0 +1,125 @@
+<!-- $Id$ -->
+<!-- $Source$ -->
+
+<html>
+<head>
+<title>ProFTPD module mod_uuid</title>
+</head>
+
+<body bgcolor=white>
+
+<hr>
+<center>
+<h2><b>ProFTPD module <code>mod_uuid</code></b></h2>
+</center>
+<hr><br>
+
+<p>
+The <code>mod_uuid</code> module generates a universally unique identifier (UUID) for every FTP session. The <code>mod_uuid</code> module uses UUIDv4 which relies only on random numbers.
+The generated UUID is stored in the <code>UUID</code> environment variable
+in a printable form; other modules can retrieve the session UUID from the
+environment.  (Note that you will want <code>mod_uuid</code> listed toward
+the <i>end</i> of your <code>--with-modules</code> configure list, so that the
+ID generation runs early in the session establishment process.)
+
+<p>
+This module is contained in the <code>mod_uuid</code> file for
+ProFTPD 1.3.<i>x</i>, and is not compiled by default.  Installation
+instructions are discussed <a href="#Installation">here</a>.
+
+<p>
+The most current version of <code>mod_uuid</code> is available at GitHub: <a href="https://www.github.com/maytech.net/proftpd-mod_uuid">www.github.com/maytech.net/proftpd-mod_uuid</a> 
+
+<h2>Author</h2>
+<p>
+Please contact Mike Futerko &lt;mike <i>at</i> maytech.net&gt; with any
+questions, concerns, or suggestions regarding this module.<br>
+The module is basically modified version of <code>mod_unique_id<code/> module by TJ Saunders, which is now part of proftpd source tree.
+
+<h2>Directives</h2>
+<ul>
+  <li><a href="#UUIDEngine">UUIDEngine</a>
+</ul>
+
+<hr>
+<h2><a name="UUIDEngine">UUIDEngine</a></h2>
+<strong>Syntax:</strong> UUIDEngine <em>on|off</em><br>
+<strong>Default:</strong> <em>on</em><br>
+<strong>Context:</strong> &quot;server config&quot;<br>
+<strong>Module:</strong> mod_uuid<br>
+<strong>Compatibility:</strong> 1.3.1rc1 and later
+
+<p>
+The <code>UUIDEngine</code> directive enables or disables the module's
+generation of a unique ID for each FTP session.
+
+<p>
+By default, <code>UUIDEngine</code> is <em>on</em>.
+
+<p>
+<hr>
+<h2><a name="Installation">Installation</a></h2>
+To install <code>mod_uuid</code>, copy the <code>mod_uuid.c</code>
+file into:
+<pre>
+  <i>proftpd-dir</i>/contrib/
+</pre>
+after unpacking the latest proftpd-1.3.<i>x</i> source code.  For including
+<code>mod_uuid</code> as a staticly linked module:
+<pre>
+  ./configure --with-modules=mod_uuid
+</pre>
+Alternatively, <code>mod_uuid</code> could be built as a DSO module:
+<pre>
+  ./configure --with-shared=mod_uuid
+</pre>
+Then follow the usual steps:
+<pre>
+  make
+  make install
+</pre>
+
+<p>
+<hr>
+<h2><a name="Usage">Usage</a></h2>
+<p>
+Since <code>mod_uuid</code> generates a new UUID for each session
+by default, there is no special configuration needed for enabling the
+module.  Taking advantage of <code>mod_uuid</code>, however, requires
+some adjustments in other parts of your <code>proftpd.conf</code>.
+
+<p>
+Example configuration:
+<pre>
+  &lt;IfModule mod_uuid.c&gt;
+
+    # Include the unique session ID in an ExtendedLog
+    LogFormat session "%{UUID}e %h %l %u %t \"%r\" %s %b"
+    ExtendedLog /path/to/extended.log ALL session
+
+    # Store the unique ID in a SQL table named 'ftpsessions'
+    SQLLog PASS login
+    SQLNamedQuery login INSERT "'%{env:UUID}', '%u', now()" ftpsessions
+
+  &lt;/IfModule&gt;
+</pre>
+
+<p>
+<hr><br>
+
+Author: <i>$Author$</i><br>
+Last Updated: <i>$Date$</i><br>
+
+<br><hr>
+
+<font size=2><b><i>
+&copy; Copyright 2013 Mike Futerko<br>
+&copy; Copyright 2006-2012 TJ Saunders<br>
+ All Rights Reserved<br>
+</i></b></font>
+
+<hr><br>
+
+</body>
+</html>
+
