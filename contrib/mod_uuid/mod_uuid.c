@@ -27,6 +27,8 @@
  * For more information contact Mike Futerko <mike@maytech.net>.
  *
  * $Id$
+ * $Archive: mod_uuid.a$
+ * $Libraries: -luuid $
  */
 
 #include <uuid/uuid.h>
@@ -36,7 +38,7 @@
  * module for ProFTPd by TJ Saunders <tj@castaglia.org>.
  */
 
-#define MOD_UUID_VERSION		"mod_uuid/0.1"
+#define MOD_UUID_VERSION		"mod_uuid/0.2"
 
 /* Make sure the version of proftpd is as necessary. */
 #if PROFTPD_VERSION_NUMBER < 0x0001030402
@@ -120,7 +122,7 @@ static int uuid_sess_init(void) {
 
   uuid_generate_random(uu);
   uuid_unparse(uu, id);
-  
+
   if (pr_env_set(session.pool, key, id) < 0) {
     pr_log_debug(DEBUG0, MOD_UUID_VERSION
       ": error setting UUID environment variable: %s", strerror(errno));
@@ -173,4 +175,3 @@ module uuid_module = {
   /* Module version */
   MOD_UUID_VERSION
 };
-
